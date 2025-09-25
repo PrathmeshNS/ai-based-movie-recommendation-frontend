@@ -1,0 +1,16 @@
+# Render manifest for frontend-only deployment
+# Use this if you want to deploy only the frontend from the `frontend` folder.
+# Do NOT commit secrets into this file. Fill env var values in the Render dashboard.
+
+services:
+  - type: static
+    name: movie-recommendation-frontend
+    branch: main
+    rootDir: .
+    plan: free
+    region: oregon
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    publishPath: build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: ""
