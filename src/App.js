@@ -6,15 +6,24 @@ function App() {
   const [recommendations, setRecommendations] = useState([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [source, setSource] = useState(null);
+  const [error, setError] = useState(null);
+
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
   const getRecommendations = async () => {
     if (!query.trim()) return;
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/recommend', { query: query.trim() });
-      setRecommendations(response.data.recommendations);
+      setError(null);
+      const response = await axios.post(`${API_URL}/recommend`, { query: query.trim() });
+      setRecommendations(response.data.recommendations || []);
+      setSource(response.data.source || null);
     } catch (error) {
       console.error('Error getting recommendations:', error);
+      setError(error?.response?.data || error.message || 'Unknown error');
+      setRecommendations([]);
+      setSource(null);
     } finally {
       setLoading(false);
     }
@@ -53,6 +62,7 @@ function App() {
         {recommendations.length > 0 && (
           <section className="recommendations">
             <h2>🎯 AI-Recommended Movies for You</h2>
+            {source && <div className="source-badge">Source: {source}</div>}
             <p>Based on your query "{query}", our AI suggests these movies:</p>
             <div className="movie-grid">
               {recommendations.map(movie => (
@@ -73,6 +83,11 @@ function App() {
                 </div>
               ))}
             </div>
+          </section>
+        )}
+        {error && (
+          <section className="error-banner">
+            <strong>API Error:</strong> {typeof error === 'string' ? error : JSON.stringify(error)}
           </section>
         )}
       </main>
