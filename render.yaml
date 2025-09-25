@@ -13,4 +13,4 @@ services:
     publishPath: build
     envVars:
       - key: REACT_APP_API_URL
-        value: ""
+        value: "https://ai-based-movie-recommendation-backend.onrender.com"
