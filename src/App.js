@@ -9,7 +9,8 @@ function App() {
   const [source, setSource] = useState(null);
   const [error, setError] = useState(null);
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  // Use REACT_APP_API_URL if set at build time; otherwise fall back to the deployed backend URL
+  const API_URL = process.env.REACT_APP_API_URL || 'https://ai-based-movie-recommendation-backend.onrender.com';
 
   const getRecommendations = async () => {
     if (!query.trim()) return;
